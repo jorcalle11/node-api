@@ -1,0 +1,30 @@
+{
+  "name": "node-api",
+  "version": "1.0.0",
+  "description": "Simple Node.js API ",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jorcalle11/node-api.git"
+  },
+  "keywords": [
+    "API"
+  ],
+  "author": "jorcalle11@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jorcalle11/node-api/issues"
+  },
+  "homepage": "https://github.com/jorcalle11/node-api#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "dotenv": "^17.2.2",
+    "nodemon": "^3.1.10"
+  }
+}
