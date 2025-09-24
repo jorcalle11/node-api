@@ -1,0 +1,14 @@
+services:
+  node-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: node-api:prod
+    container_name: node-api
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+

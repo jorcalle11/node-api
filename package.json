@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
-    "start": "node index.js"
+    "dev:docker": "docker compose -f docker-compose.dev.yml up --build -d",
+    "dev:docker-down": "docker compose -f docker-compose.dev.yml down",
+    "start": "node index.js",
+    "start:docker": "docker compose up --build -d",
+    "start:docker-down": "docker compose down"
   },
   "repository": {
     "type": "git",
