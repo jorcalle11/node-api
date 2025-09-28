@@ -1,0 +1,32 @@
+# Node.js dependencies (will be installed inside container)
+node_modules
+npm-debug.log
+
+# Environment files (don’t bake secrets into image)
+.env
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.idea
+*.vscode
+
+# Logs
+logs
+*.log
+*.out
+*.pid
+
+# Tests / coverage
+coverage
+*.lcov
+
+# Build artifacts (if any)
+dist
+build
+
+# Local MySQL data (use volumes instead)
+data
+db/data

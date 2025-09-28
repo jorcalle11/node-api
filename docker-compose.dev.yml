@@ -2,15 +2,35 @@ services:
   node-api-dev:
     build:
       context: .
-      dockerfile: Dockerfile
+      target: dev # use the dev stage in the Dockerfile
     image: node-api:dev
     container_name: node-api-dev
     ports:
-      - "4000:3000"
+      - "${NODE_API_PORT}:${NODE_API_PORT}"
     environment:
-      NODE_ENV: testing
-      PORT: 3000
+      NODE_ENV: ${NODE_ENV}
+      PORT: ${NODE_API_PORT}
+      DB_HOST: node-api-db
+      DB_PORT: 3306
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      DB_NAME: ${MYSQL_DATABASE}
     volumes:
       - .:/app                        # mount local code into container
       - /app/node_modules             # keep container’s node_modules isolated
-    command: npm run dev              # override CMD to use nodemon
+    depends_on:
+      - node-api-db-dev
+
+  node-api-db-dev:
+    image: mysql:9.4.0
+    container_name: node-api-db-dev
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    ports:
+      - "${MYSQL_PORT}:3306"
+    volumes:
+      - ${MYSQL_DB_DATA_PATH}:/var/lib/mysql

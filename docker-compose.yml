@@ -1,14 +1,35 @@
 services:
-  node-api:
+  node-api-prod:
     build:
       context: .
-      dockerfile: Dockerfile
+      target: prod
     image: node-api:prod
-    container_name: node-api
+    container_name: node-api-prod
     restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
       NODE_ENV: production
       PORT: 3000
+      DB_HOST: node-api-db-prod
+      DB_PORT: 3306
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      DB_NAME: ${MYSQL_DATABASE}
+    depends_on:
+      - node-api-db-prod
+
+  node-api-db-prod:
+    image: mysql:9.4.0
+    container_name: node-api-db-prod
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - ${MYSQL_DB_DATA_PATH}:/var/lib/mysql
 
