@@ -19,6 +19,27 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
+      DB_HOST: node-api-db
+      DB_PORT: 3306
+      DB_USER: "root"
+      DB_PASSWORD: "123456"
+      DB_NAME: "my_database"
+    depends_on:
+      - node-api-db
+
+  node-api-db:
+    image: mysql:9.4.0
+    container_name: node-api-db
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=my_database
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=123456
+    ports:
+      - "3306:3306"
+    volumes:
+      - db/data:/var/lib/mysql
 ```
 
 2. Run the following command to start the service:
@@ -64,7 +85,7 @@ npm install
 3. Start the server:
 
 ```bash
-npm run start:docker
+npm run prod
 ```
 
 4. The API will be accessible at [http://localhost:3000](http://localhost:3000).
@@ -72,7 +93,7 @@ npm run start:docker
 5. To stop the server, run:
 
 ```bash
-npm run start:docker-down
+npm run prod-stop
 ```
 
 ## Run from source in development mode
@@ -80,7 +101,7 @@ npm run start:docker-down
 1. Start the server in development mode:
 
 ```bash
-npm run dev:docker
+npm run dev
 ```
 
 2. The API will be accessible at [http://localhost:4000](http://localhost:4000).
@@ -88,5 +109,5 @@ npm run dev:docker
 3. To stop the server, run:
 
 ```bash
-npm run dev:docker-down
+npm run dev-stop
 ```
