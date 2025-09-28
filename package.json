@@ -2,12 +2,12 @@
   "name": "node-api",
   "version": "1.0.0",
   "description": "Simple Node.js API ",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "dev": "docker compose -f docker-compose.dev.yml up --build",
-    "dev-server": "nodemon index.js",
+    "dev-server": "nodemon src/index.js",
     "dev-stop": "docker compose -f docker-compose.dev.yml down",
-    "start": "node index.js",
+    "start": "node src/index.js",
     "prod": "docker compose up --build -d",
     "prod-stop": "docker compose down"
   },

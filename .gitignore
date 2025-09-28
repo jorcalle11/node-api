@@ -4,4 +4,4 @@ node_modules/
 .DS_Store
 
 # Ignore database files
-db/data
+db_data/
