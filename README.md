@@ -6,57 +6,40 @@ This is a simple Node.js API built with Express.js.
 
 You need to have Docker and Docker Compose installed on your machine.
 
-1. Create a `docker-compose.yml` file with the following content:
+1. Create a directory of your choice (e.g., `node-api`) to hold the `docker-compose.yml` file and `.env` file. Navigate to that directory in your terminal.
 
-```yaml
-services:
-  my-node-api:
-    image: jorcalle11/node-api:latest
-    container_name: my-node-api
-    restart: unless-stopped
-    ports:
-      - "3000:3000"
-    environment:
-      NODE_ENV: production
-      PORT: 3000
-      DB_HOST: node-api-db
-      DB_PORT: 3306
-      DB_USER: "root"
-      DB_PASSWORD: "123456"
-      DB_NAME: "my_database"
-    depends_on:
-      - node-api-db
-
-  node-api-db:
-    image: mysql:9.4.0
-    container_name: node-api-db
-    restart: unless-stopped
-    environment:
-      - MYSQL_ROOT_PASSWORD=123456
-      - MYSQL_DATABASE=my_database
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=123456
-    ports:
-      - "3306:3306"
-    volumes:
-      - db/data:/var/lib/mysql
+```bash
+mkdir node-api
+cd node-api
 ```
 
-2. Run the following command to start the service:
+2. Download the `docker-compose.yml` and `.env` by running the following commands:
+
+```bash
+# Download docker-compose.yml
+curl -o docker-compose.yml https://raw.githubusercontent.com/jorcalle11/node-api/refs/heads/main/download/docker-compose.yml
+
+# Download .env
+curl -o .env https://raw.githubusercontent.com/jorcalle11/node-api/refs/heads/main/download/example.env
+```
+
+3. Edit the `.env` file to set your desired environment variables.
+
+4. (optional) Create the database data directory specified in the `DB_DATA_PATH` variable in the `.env` file if it does not already exist:
+
+```bash
+mkdir -p ./db_data
+```
+
+5. Start the service using Docker Compose.
 
 ```bash
 docker compose up -d
 ```
 
-3. The API will be accessible at [http://localhost:3000](http://localhost:3000).
+6. The API will be accessible at [http://localhost:3000](http://localhost:3000) (or the port you specified in the `.env` file).
 
-4. To check the logs, use:
-
-```bash
-docker logs -f my-node-api
-```
-
-5. To stop the service, run:
+7. To stop the service, run:
 
 ```bash
 docker compose down
@@ -67,7 +50,7 @@ docker compose down
 - `GET /`: Returns a welcome message.
 - `GET /health`: Returns the health status of the API.
 
-## Run from Source
+## Installation from Source
 
 1. Clone the repository:
 
@@ -94,20 +77,4 @@ npm run prod
 
 ```bash
 npm run prod-stop
-```
-
-## Run from source in development mode
-
-1. Start the server in development mode:
-
-```bash
-npm run dev
-```
-
-2. The API will be accessible at [http://localhost:4000](http://localhost:4000).
-
-3. To stop the server, run:
-
-```bash
-npm run dev-stop
 ```
