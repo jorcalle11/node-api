@@ -9,18 +9,18 @@ app.get("/", async (req, res) => {
   const number1 = Math.floor(Math.random() * 10);
   const number2 = Math.floor(Math.random() * 10);
   console.log(`Generated numbers: ${number1}, ${number2}`);
-  const { results, fields } = await db.query("SELECT ? + ? AS sum", [
+  const { rows, fields } = await db.query("SELECT ? + ? AS sum", [
     number1,
     number2,
   ]);
 
-  console.log("Query results:", results);
+  console.log("Query results:", rows);
 
   res.send({
     message: "Hello, World!",
     number1,
     number2,
-    sum: results[0]?.sum,
+    sum: rows[0]?.sum,
   });
 });
 

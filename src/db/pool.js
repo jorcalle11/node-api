@@ -13,7 +13,7 @@ function checkEnvVariables() {
   });
 }
 
-function createPool() {
+function createPool(options = {}) {
   checkEnvVariables();
   console.log("Initializing database pool...");
 
@@ -24,6 +24,7 @@ function createPool() {
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
+    ...options,
   });
 }
 
@@ -40,9 +41,18 @@ async function query(sql, values) {
   const connection = await getConnection();
   console.log("Executing query:", sql);
 
-  const [results, fields] = await connection.execute(sql, values);
+  const [rows, fields] = await connection.query(sql, values);
   connection.release();
-  return { results, fields };
+  return { rows, fields };
+}
+
+async function execute(sql, values) {
+  const connection = await getConnection();
+  console.log("Executing command:", sql);
+
+  const [rows, fields] = await connection.execute(sql, values);
+  connection.release();
+  return { rows, fields };
 }
 
 async function closePool() {
@@ -57,6 +67,8 @@ async function closePool() {
 
 module.exports = {
   createPool,
+  getConnection,
   query,
+  execute,
   closePool,
 };
