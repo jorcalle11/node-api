@@ -1,3 +1,10 @@
+CREATE TABLE IF NOT EXISTS schema_migrations(
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  version VARCHAR(50) NOT NULL,
+  applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  applied_by VARCHAR(100) NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
@@ -38,13 +45,6 @@ CREATE TABLE IF NOT EXISTS likes (
     CHECK (NOT (post_id IS NOT NULL AND comment_id IS NOT NULL))
 );
 
-CREATE TABLE IF NOT EXISTS schema_migrations(
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  version VARCHAR(50) NOT NULL,
-  applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-
 CREATE INDEX idx_user_id ON posts(user_id);
 CREATE INDEX idx_post_id ON comments(post_id);
 CREATE INDEX idx_comment_user_id ON comments(user_id);
@@ -56,5 +56,4 @@ CREATE INDEX idx_like_user_id ON likes(user_id);
 CREATE INDEX idx_like_post_id ON likes(post_id);
 CREATE INDEX idx_like_comment_id ON likes(comment_id);
 
-INSERT INTO schema_migrations (version) VALUES ('2025-09-30-001');
-
+INSERT INTO schema_migrations (version, applied_by) VALUES ('2025-09-30-001', 'migration_script');
