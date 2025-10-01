@@ -16,8 +16,11 @@ services:
       DB_USER: ${MYSQL_USER}
       DB_PASSWORD: ${MYSQL_PASSWORD}
       DB_NAME: ${MYSQL_DATABASE}
+    entrypoint: ["sh", "/app/entrypoint.sh"]
+    command: ["npm", "start"]
     depends_on:
-      - node-api-db-prod
+      node-api-db-prod:
+        condition: service_healthy
 
   node-api-db-prod:
     image: mysql:9.4.0
@@ -32,4 +35,10 @@ services:
       - "3306:3306"
     volumes:
       - ${MYSQL_DB_DATA_PATH}:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
+      timeout: 30s
+      start_period: 10s
 

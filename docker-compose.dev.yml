@@ -19,7 +19,8 @@ services:
       - .:/app                        # mount local code into container
       - /app/node_modules             # keep container’s node_modules isolated
     depends_on:
-      - node-api-db-dev
+      node-api-db-dev:
+        condition: service_healthy
 
   node-api-db-dev:
     image: mysql:9.4.0
@@ -34,3 +35,9 @@ services:
       - "${MYSQL_PORT}:3306"
     volumes:
       - ${MYSQL_DB_DATA_PATH}:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      retries: 5
+      timeout: 30s
+      start_period: 10s
