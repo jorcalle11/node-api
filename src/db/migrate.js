@@ -1,5 +1,6 @@
 const fs = require("fs").promises;
 const db = require("./pool");
+const logger = require("../logger")("migration");
 
 const versionRegex = /^(\d{4}-\d{2}-\d{2}-\d{3})/;
 const migrationsDir = __dirname + "/migrations";
@@ -8,11 +9,11 @@ const initFile = `${initialVersion}-initial-schema.sql`;
 
 runMigrations()
   .then(async () => {
-    console.log("Migrations completed.");
+    logger.info("Migrations completed.");
     return db.closePool();
   })
   .catch(async (err) => {
-    console.error("Migration error:", err);
+    logger.error("Migration error:", err);
     return db.closePool();
   });
 
@@ -26,13 +27,13 @@ async function runMigrations() {
   );
 
   if (informationResult.rows.length === 0) {
-    console.log(
+    logger.log(
       "schema_migrations table does not exist. Running initial migration."
     );
     const initFilePath = `${migrationsDir}/${initFile}`;
     const initFileContent = await fs.readFile(initFilePath, "utf8");
     const initResult = await db.query(initFileContent);
-    console.log("Initial migration file executed successfully:", initResult);
+    logger.log("Initial migration file executed successfully:", initResult);
     return;
   }
 
@@ -41,7 +42,7 @@ async function runMigrations() {
     "SELECT version FROM schema_migrations ORDER BY version DESC LIMIT 1"
   );
   const latestMigrationVersionOnDB = rows?.[0]?.version;
-  console.log("Latest migration version in DB:", latestMigrationVersionOnDB);
+  logger.log("Latest migration version in DB:", latestMigrationVersionOnDB);
 
   if (!latestMigrationVersionOnDB) {
     throw new Error("No migration version found in schema_migrations table.");
@@ -62,22 +63,22 @@ async function runMigrations() {
     );
   }
   const latestFileApplied = migrationFiles[latestFileAppliedIndex];
-  console.log("Latest migration file applied:", latestFileApplied);
+  logger.log("Latest migration file applied:", latestFileApplied);
 
   const pendingMigrations = migrationFiles.slice(latestFileAppliedIndex + 1);
   if (pendingMigrations.length === 0) {
-    console.log("No new migrations to apply.");
+    logger.log("No new migrations to apply.");
     return;
   }
 
-  console.log("Pending migrations to apply:", pendingMigrations);
+  logger.log("Pending migrations to apply:", pendingMigrations);
   const dbConnection = await db.getConnection();
 
   for (const file of pendingMigrations) {
     const filePath = `${migrationsDir}/${file}`;
     const fileContent = await fs.readFile(filePath, "utf8");
     const version = file.match(versionRegex)[1];
-    console.log(`Applying migration: ${file}`);
+    logger.log(`Applying migration: ${file}`);
 
     try {
       await dbConnection.beginTransaction();
@@ -87,10 +88,10 @@ async function runMigrations() {
         [version, __filename]
       );
       await dbConnection.commit();
-      console.log(`Migration ${file} applied successfully.`);
+      logger.log(`Migration ${file} applied successfully.`);
     } catch (err) {
       await dbConnection.rollback();
-      console.error(`Error applying migration ${file}:`, err);
+      logger.error(`Error applying migration ${file}:`, err);
       throw err;
     }
   }

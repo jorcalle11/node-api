@@ -1,3 +1,4 @@
+const logger = require("../logger")("db-pool");
 const mysql = require("mysql2/promise");
 let pool;
 
@@ -6,6 +7,7 @@ function checkEnvVariables() {
 
   requiredEnvVars.forEach((varName) => {
     if (!process.env[varName]) {
+      logger.error(`Environment variable ${varName} is required but not set.`);
       throw new Error(
         `Environment variable ${varName} is required but not set.`
       );
@@ -15,7 +17,7 @@ function checkEnvVariables() {
 
 function createPool(options = {}) {
   checkEnvVariables();
-  console.log("Initializing database pool...");
+  logger.info("Initializing database pool...", options);
 
   pool = mysql.createPool({
     connectionLimit: 10,
@@ -33,13 +35,13 @@ async function getConnection() {
     createPool();
   }
 
-  console.log("Getting database connection...");
+  logger.info("Getting database connection...");
   return pool.getConnection();
 }
 
 async function query(sql, values) {
   const connection = await getConnection();
-  console.log("Executing query:", sql);
+  logger.info("query:", sql, values);
 
   const [rows, fields] = await connection.query(sql, values);
   connection.release();
@@ -48,7 +50,7 @@ async function query(sql, values) {
 
 async function execute(sql, values) {
   const connection = await getConnection();
-  console.log("Executing command:", sql);
+  logger.info("Execute:", sql, values);
 
   const [rows, fields] = await connection.execute(sql, values);
   connection.release();
@@ -60,7 +62,7 @@ async function closePool() {
     return;
   }
 
-  console.log("Closing database pool...");
+  logger.info("Closing database pool...");
   await pool.end();
   pool = null;
 }
