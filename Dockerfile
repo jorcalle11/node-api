@@ -32,4 +32,7 @@ ENV NODE_ENV=production
 ENV PORT=3000
 EXPOSE 3000
 
-CMD [ "npm", "start" ]
+# Use an entrypoint script to run migrations before starting the app
+ENTRYPOINT [ "sh", "entrypoint.sh" ]
+
+CMD [ "node" , "src/index.js" ]
