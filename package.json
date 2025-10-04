@@ -11,7 +11,9 @@
     "prod": "docker compose up --build -d",
     "prod-stop": "docker compose down",
     "migrate": "node src/db/migrate.js",
-    "migrate:dev": "docker compose exec node-api-dev npm run migrate"
+    "migrate:dev": "docker compose exec node-api-dev npm run migrate",
+    "seeds": "node src/db/seeds.js",
+    "seeds:dev": "docker compose exec node-api-dev npm run seeds"
   },
   "repository": {
     "type": "git",
@@ -27,6 +29,7 @@
   },
   "homepage": "https://github.com/jorcalle11/node-api#readme",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "express": "^5.1.0",
     "mysql2": "^3.15.1"
   },
